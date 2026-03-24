@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DeepGuard – Offline</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <style>
+    .offline-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 24px;
+      gap: 24px;
+    }
+    .offline-icon { font-size: 5rem; }
+    .offline-title { font-size: 2rem; font-weight: 800; }
+    .offline-msg   { color: var(--text-dim); max-width: 420px; line-height: 1.7; }
+    .offline-retry {
+      background: var(--accent); color: #fff;
+      border: none; border-radius: 12px;
+      padding: 12px 32px; font-size: 1rem; font-weight: 700;
+      cursor: pointer; font-family: var(--font);
+      transition: opacity .2s;
+    }
+    .offline-retry:hover { opacity: .85; }
+  </style>
+</head>
+<body>
+  <div class="offline-page">
+    <div class="offline-icon">📡</div>
+    <h1 class="offline-title">You're Offline</h1>
+    <p class="offline-msg">
+      DeepGuard requires an internet connection for analysis.<br/>
+      Please check your connection and try again.
+    </p>
+    <button class="offline-retry" onclick="location.reload()">Retry Connection</button>
+  </div>
+</body>
+</html>

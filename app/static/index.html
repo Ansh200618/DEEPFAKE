@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DeepGuard – Deepfake & Fake-News Detector</title>
+  <!-- PWA -->
+  <link rel="manifest" href="/static/manifest.json" />
+  <meta name="theme-color" content="#3b82f6" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="DeepGuard" />
+  <link rel="apple-touch-icon" href="/static/icons/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32.png" />
+  <!-- SEO / OG -->
+  <meta name="description" content="AI-powered deepfake and fake-news detection. Analyse images, videos, audio and text for synthetic manipulation." />
+  <meta property="og:title" content="DeepGuard – Deepfake & Fake-News Detector" />
+  <meta property="og:description" content="Multimodal AI-powered forensic analysis to stop fraud and fake news." />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════ HEADER ══ -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon">🛡️</span>
+      <span class="logo-text">Deep<span class="accent">Guard</span></span>
+    </div>
+    <nav class="nav">
+      <a href="#detector"  class="nav-link">Detector</a>
+      <a href="#how"       class="nav-link">How It Works</a>
+      <a href="#about"     class="nav-link">About</a>
+      <a href="/api/docs"  class="nav-link" target="_blank">API Docs</a>
+    </nav>
+    <div class="header-badge">v1.0 – Research Edition</div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════ HERO ════ -->
+<section class="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-content">
+    <div class="hero-tag">AI-Powered Detection</div>
+    <h1 class="hero-title">
+      Stop Deepfakes.<br/>Stop Fake News.<br/>
+      <span class="accent">Protect Truth.</span>
+    </h1>
+    <p class="hero-sub">
+      Multimodal forensic analysis for images, videos, audio recordings,
+      and news articles — powered by ELA, frequency-domain fingerprinting,
+      MFCC voice analysis, and NLP-based credibility scoring.
+    </p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-n">4</span><span class="stat-l">Modalities</span></div>
+      <div class="stat"><span class="stat-n">15+</span><span class="stat-l">Feature Vectors</span></div>
+      <div class="stat"><span class="stat-n">100%</span><span class="stat-l">Open Source</span></div>
+    </div>
+    <a href="#detector" class="btn-primary">Start Detecting ↓</a>
+  </div>
+  <div class="hero-visual">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="scan-ring"></div>
+    <span class="hero-shield">🛡️</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ DETECTOR ══ -->
+<section id="detector" class="detector-section">
+  <div class="container">
+    <h2 class="section-title">Analyse Content</h2>
+    <p class="section-sub">Upload any file or paste text. Results are returned instantly.</p>
+
+    <!-- Tabs -->
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-tab="image"  role="tab">🖼️ Image</button>
+      <button class="tab"        data-tab="video"  role="tab">🎬 Video</button>
+      <button class="tab"        data-tab="audio"  role="tab">🎙️ Audio</button>
+      <button class="tab"        data-tab="text"   role="tab">📰 Text / News</button>
+    </div>
+
+    <!-- ── Image panel ── -->
+    <div class="panel active" id="panel-image">
+      <div class="upload-zone" id="drop-image" tabindex="0"
+           aria-label="Drop image here or click to select">
+        <div class="upload-icon">🖼️</div>
+        <p class="upload-msg">Drag & drop an image here<br/>or <span class="link">browse files</span></p>
+        <p class="upload-hint">JPG · PNG · WebP · BMP · TIFF – max 50 MB</p>
+        <input type="file" id="file-image" accept="image/*" hidden />
+      </div>
+      <div class="preview-wrap hidden" id="preview-image-wrap">
+        <img id="preview-image" src="" alt="preview" />
+        <button class="btn-clear" data-target="image">✕ Clear</button>
+      </div>
+      <button class="btn-analyse" id="btn-image">Analyse Image</button>
+    </div>
+
+    <!-- ── Video panel ── -->
+    <div class="panel" id="panel-video">
+      <div class="upload-zone" id="drop-video" tabindex="0"
+           aria-label="Drop video here or click to select">
+        <div class="upload-icon">🎬</div>
+        <p class="upload-msg">Drag & drop a video here<br/>or <span class="link">browse files</span></p>
+        <p class="upload-hint">MP4 · WebM · MOV · AVI – max 50 MB</p>
+        <input type="file" id="file-video" accept="video/*" hidden />
+      </div>
+      <div class="preview-wrap hidden" id="preview-video-wrap">
+        <video id="preview-video" controls></video>
+        <button class="btn-clear" data-target="video">✕ Clear</button>
+      </div>
+      <button class="btn-analyse" id="btn-video">Analyse Video</button>
+    </div>
+
+    <!-- ── Audio panel ── -->
+    <div class="panel" id="panel-audio">
+      <div class="upload-zone" id="drop-audio" tabindex="0"
+           aria-label="Drop audio here or click to select">
+        <div class="upload-icon">🎙️</div>
+        <p class="upload-msg">Drag & drop an audio file here<br/>or <span class="link">browse files</span></p>
+        <p class="upload-hint">WAV · MP3 · OGG · FLAC · M4A – max 50 MB</p>
+        <input type="file" id="file-audio" accept="audio/*" hidden />
+      </div>
+      <div class="preview-wrap hidden" id="preview-audio-wrap">
+        <audio id="preview-audio" controls></audio>
+        <button class="btn-clear" data-target="audio">✕ Clear</button>
+      </div>
+      <button class="btn-analyse" id="btn-audio">Analyse Audio</button>
+    </div>
+
+    <!-- ── Text panel ── -->
+    <div class="panel" id="panel-text">
+      <textarea id="text-input" placeholder="Paste a news headline, article, social media post, or any text you want to verify for authenticity..." rows="8"></textarea>
+      <div class="text-controls">
+        <span id="char-count" class="char-count">0 characters</span>
+        <button class="btn-clear-text" id="btn-clear-text">Clear</button>
+      </div>
+      <button class="btn-analyse" id="btn-text">Analyse Text</button>
+    </div>
+
+    <!-- ── Results ── -->
+    <div id="results-area" class="results-area hidden">
+      <div class="results-card">
+        <div class="result-header">
+          <div id="result-verdict" class="verdict"></div>
+          <div id="result-confidence" class="confidence-wrap">
+            <span class="conf-label">Confidence</span>
+            <div class="conf-bar-bg">
+              <div id="conf-bar" class="conf-bar"></div>
+            </div>
+            <span id="conf-pct" class="conf-pct">—</span>
+          </div>
+        </div>
+        <div id="result-flags" class="flags-list"></div>
+        <div id="result-details" class="details-grid"></div>
+        <div class="result-footer">
+          <span class="disclaimer">⚠️ Results are probabilistic and should be reviewed by a human expert before taking any action.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spinner -->
+    <div id="spinner" class="spinner hidden">
+      <div class="spinner-ring"></div>
+      <p class="spinner-text">Analysing content…</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ HOW IT WORKS ══ -->
+<section id="how" class="how-section">
+  <div class="container">
+    <h2 class="section-title">How It Works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-icon">🔬</div>
+        <h3>Error Level Analysis</h3>
+        <p>Re-saves the image at a known JPEG quality and computes pixel-level
+           differences. Manipulated regions show higher error levels than
+           authentic areas.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">📡</div>
+        <h3>Frequency Fingerprinting</h3>
+        <p>GAN-generated content leaves characteristic signatures in the DCT
+           domain. DeepGuard computes high-frequency energy ratios to expose
+           synthetic generation artefacts.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">🎚️</div>
+        <h3>MFCC Voice Analysis</h3>
+        <p>Mel-Frequency Cepstral Coefficients, pitch trajectory, and spectral
+           flatness are extracted from audio. Voice-cloned speech exhibits
+           unnaturally smooth MFCC variance.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">🧠</div>
+        <h3>NLP Credibility Scoring</h3>
+        <p>Clickbait patterns, emotional manipulation language, factual density,
+           and structural red-flags are combined to produce a fake-news
+           probability score.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">🎞️</div>
+        <h3>Temporal Video Analysis</h3>
+        <p>Optical-flow analysis detects face-swap boundary artefacts. Blink-rate
+           and face-presence consistency are evaluated across sampled frames.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">⚖️</div>
+        <h3>Weighted Score Fusion</h3>
+        <p>All sub-scores are fused into a single interpretable confidence value
+           with FAKE / SUSPICIOUS / REAL classification and human-readable flags.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ ABOUT ══ -->
+<section id="about" class="about-section">
+  <div class="container about-grid">
+    <div class="about-text">
+      <h2 class="section-title left">About DeepGuard</h2>
+      <p>DeepGuard is an open-source research platform designed to combat
+         AI-generated misinformation. As synthetic media becomes indistinguishable
+         from authentic content, robust forensic tooling becomes essential for
+         journalists, law-enforcement, and everyday users.</p>
+      <p>The platform operates entirely locally — no content is uploaded to
+         third-party servers — ensuring privacy and making it suitable for
+         sensitive investigations.</p>
+      <ul class="about-list">
+        <li>✅ Free and open-source (MIT licence)</li>
+        <li>✅ No cloud dependency — runs 100 % on-device</li>
+        <li>✅ REST API for integration into other tools</li>
+        <li>✅ Installable as a system service on Linux</li>
+        <li>✅ Extensible detector pipeline</li>
+      </ul>
+    </div>
+    <div class="about-visual">
+      <div class="threat-card">
+        <div class="threat-title">🚨 Threats Detected</div>
+        <div class="threat-item">Face-swap deepfake videos</div>
+        <div class="threat-item">GAN-generated portrait images</div>
+        <div class="threat-item">Voice-cloned audio recordings</div>
+        <div class="threat-item">AI-written fake news articles</div>
+        <div class="threat-item">Spliced / composited photographs</div>
+        <div class="threat-item">Emotional-manipulation propaganda</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ FOOTER ══ -->
+<!-- PWA install banner -->
+<div id="install-banner" class="pwa-banner hidden">
+  <span class="pwa-banner-text">🛡️ Install <strong>DeepGuard</strong> as an app for offline access</span>
+  <div class="pwa-banner-actions">
+    <button id="install-btn"    class="pwa-btn pwa-btn-primary">Install</button>
+    <button id="install-dismiss" class="pwa-btn pwa-btn-ghost">Not now</button>
+  </div>
+</div>
+<!-- PWA update banner -->
+<div id="update-banner" class="pwa-banner update hidden">
+  <span class="pwa-banner-text">🔄 A new version of DeepGuard is available</span>
+  <div class="pwa-banner-actions">
+    <button id="reload-btn" class="pwa-btn pwa-btn-primary">Update now</button>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      🛡️ <strong>DeepGuard</strong> — Protecting truth with AI
+    </div>
+    <div class="footer-links">
+      <a href="/api/docs">API Docs</a>
+      <a href="https://github.com/Ansh200618/DEEPFAKE" target="_blank">GitHub</a>
+    </div>
+    <div class="footer-note">
+      For research and educational purposes. Always verify with qualified experts.
+    </div>
+  </div>
+</footer>
+
+<script src="/static/js/app.js"></script>
+<script>
+  /* ── PWA: Service Worker Registration ──────────────────── */
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/static/sw.js', { scope: '/' })
+        .then(reg => {
+          console.log('[SW] Registered, scope:', reg.scope);
+          reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                showUpdateBanner();
+              }
+            });
+          });
+        })
+        .catch(err => console.warn('[SW] Registration failed:', err));
+    });
+  }
+
+  /* ── PWA: Install prompt ────────────────────────────────── */
+  let deferredPrompt = null;
+  const installBanner = document.getElementById('install-banner');
+  const installBtn    = document.getElementById('install-btn');
+  const installDismiss = document.getElementById('install-dismiss');
+
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installBanner) installBanner.classList.remove('hidden');
+  });
+
+  if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log('[PWA] Install outcome:', outcome);
+      deferredPrompt = null;
+      if (installBanner) installBanner.classList.add('hidden');
+    });
+  }
+  if (installDismiss) {
+    installDismiss.addEventListener('click', () => {
+      if (installBanner) installBanner.classList.add('hidden');
+    });
+  }
+
+  window.addEventListener('appinstalled', () => {
+    console.log('[PWA] App installed');
+    if (installBanner) installBanner.classList.add('hidden');
+    deferredPrompt = null;
+  });
+
+  /* ── Update banner ──────────────────────────────────────── */
+  function showUpdateBanner() {
+    const b = document.getElementById('update-banner');
+    if (b) b.classList.remove('hidden');
+  }
+  const reloadBtn = document.getElementById('reload-btn');
+  if (reloadBtn) {
+    reloadBtn.addEventListener('click', () => window.location.reload());
+  }
+</script>
