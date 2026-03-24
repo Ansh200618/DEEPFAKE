@@ -376,6 +376,29 @@ textarea:focus { outline:none; border-color:var(--accent); }
 .footer-links a { font-size:.88rem; color:var(--text-muted); }
 .footer-note { font-size:.78rem; color:var(--text-muted); }
 
+/* ══════════════════ PWA BANNERS ═════════════════════════ */
+.pwa-banner {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+  background: var(--surface2); border-top: 1px solid var(--border);
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  padding: 14px 24px; gap: 12px;
+  box-shadow: 0 -4px 24px rgba(0,0,0,.5);
+  animation: slideUp .3s ease;
+}
+.pwa-banner.update { background: rgba(59,130,246,.12); border-top-color: var(--accent); }
+.pwa-banner.hidden { display: none; }
+.pwa-banner-text   { font-size: .92rem; color: var(--text); }
+.pwa-banner-actions { display: flex; gap: 10px; }
+.pwa-btn {
+  padding: 8px 20px; border-radius: 8px; border: none;
+  font-family: var(--font); font-size: .9rem; font-weight: 600; cursor: pointer;
+  transition: opacity .2s;
+}
+.pwa-btn:hover        { opacity: .85; }
+.pwa-btn-primary      { background: var(--accent); color: #fff; }
+.pwa-btn-ghost        { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
 /* ══════════════════ RESPONSIVE ══════════════════════════ */
 @media(max-width:600px){
   .hero-stats { gap:20px; }

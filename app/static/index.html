@@ -4,6 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DeepGuard – Deepfake & Fake-News Detector</title>
+  <!-- PWA -->
+  <link rel="manifest" href="/static/manifest.json" />
+  <meta name="theme-color" content="#3b82f6" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="DeepGuard" />
+  <link rel="apple-touch-icon" href="/static/icons/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32.png" />
+  <!-- SEO / OG -->
+  <meta name="description" content="AI-powered deepfake and fake-news detection. Analyse images, videos, audio and text for synthetic manipulation." />
+  <meta property="og:title" content="DeepGuard – Deepfake & Fake-News Detector" />
+  <meta property="og:description" content="Multimodal AI-powered forensic analysis to stop fraud and fake news." />
+  <meta property="og:type" content="website" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/css/style.css" />
@@ -241,6 +255,22 @@
 </section>
 
 <!-- ═══════════════════════════════════════════════════ FOOTER ══ -->
+<!-- PWA install banner -->
+<div id="install-banner" class="pwa-banner hidden">
+  <span class="pwa-banner-text">🛡️ Install <strong>DeepGuard</strong> as an app for offline access</span>
+  <div class="pwa-banner-actions">
+    <button id="install-btn"    class="pwa-btn pwa-btn-primary">Install</button>
+    <button id="install-dismiss" class="pwa-btn pwa-btn-ghost">Not now</button>
+  </div>
+</div>
+<!-- PWA update banner -->
+<div id="update-banner" class="pwa-banner update hidden">
+  <span class="pwa-banner-text">🔄 A new version of DeepGuard is available</span>
+  <div class="pwa-banner-actions">
+    <button id="reload-btn" class="pwa-btn pwa-btn-primary">Update now</button>
+  </div>
+</div>
+
 <footer class="footer">
   <div class="container footer-inner">
     <div class="footer-brand">
@@ -257,5 +287,67 @@
 </footer>
 
 <script src="/static/js/app.js"></script>
-</body>
-</html>
+<script>
+  /* ── PWA: Service Worker Registration ──────────────────── */
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/static/sw.js', { scope: '/' })
+        .then(reg => {
+          console.log('[SW] Registered, scope:', reg.scope);
+          reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                showUpdateBanner();
+              }
+            });
+          });
+        })
+        .catch(err => console.warn('[SW] Registration failed:', err));
+    });
+  }
+
+  /* ── PWA: Install prompt ────────────────────────────────── */
+  let deferredPrompt = null;
+  const installBanner = document.getElementById('install-banner');
+  const installBtn    = document.getElementById('install-btn');
+  const installDismiss = document.getElementById('install-dismiss');
+
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installBanner) installBanner.classList.remove('hidden');
+  });
+
+  if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log('[PWA] Install outcome:', outcome);
+      deferredPrompt = null;
+      if (installBanner) installBanner.classList.add('hidden');
+    });
+  }
+  if (installDismiss) {
+    installDismiss.addEventListener('click', () => {
+      if (installBanner) installBanner.classList.add('hidden');
+    });
+  }
+
+  window.addEventListener('appinstalled', () => {
+    console.log('[PWA] App installed');
+    if (installBanner) installBanner.classList.add('hidden');
+    deferredPrompt = null;
+  });
+
+  /* ── Update banner ──────────────────────────────────────── */
+  function showUpdateBanner() {
+    const b = document.getElementById('update-banner');
+    if (b) b.classList.remove('hidden');
+  }
+  const reloadBtn = document.getElementById('reload-btn');
+  if (reloadBtn) {
+    reloadBtn.addEventListener('click', () => window.location.reload());
+  }
+</script>
